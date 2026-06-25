@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import perfilPhoto from "@/imports/perfilphoto.png";
 import { motion, AnimatePresence } from "motion/react";
+import Skills from "./components/Skills";
 import {
   ArrowUpRight, Menu, X, Github, Instagram, Linkedin, Mail,
   ArrowLeft, ExternalLink, ChevronLeft, ChevronRight, Globe, Code2
@@ -178,29 +179,6 @@ const PROJECTS: Project[] = [
   },
 ];
 
-const SKILLS = [
-  {
-    discipline: "Development",
-    icon: "{ }",
-    items: ["React / Next.js", "Node.js / Express", "TypeScript", "PostgreSQL", "Docker", "REST & GraphQL"],
-  },
-  {
-    discipline: "Design",
-    icon: "◈",
-    items: ["Brand Identity", "UI/UX", "Motion Design", "Typography", "Print", "Figma / Illustrator"],
-  },
-  {
-    discipline: "Illustration",
-    icon: "✦",
-    items: ["Digital Illustration", "Editorial Art", "Character Design", "Concept Art", "Procreate", "Vector Art"],
-  },
-  {
-    discipline: "Photography",
-    icon: "⊙",
-    items: ["Documentary", "Street", "Portrait", "Product", "Lightroom", "Studio Lighting"],
-  },
-];
-
 // ─── Cursor ───────────────────────────────────────────────────────────────────
 function Cursor() {
   const [pos, setPos] = useState({ x: -100, y: -100 });
@@ -214,7 +192,10 @@ function Cursor() {
     };
     window.addEventListener("mousemove", move);
     window.addEventListener("mouseover", over);
-    return () => { window.removeEventListener("mousemove", move); window.removeEventListener("mouseover", over); };
+    return () => {
+      window.removeEventListener("mousemove", move);
+      window.removeEventListener("mouseover", over);
+    };
   }, []);
 
   return (
@@ -226,7 +207,12 @@ function Cursor() {
       />
       <motion.div
         className="fixed top-0 left-0 rounded-full border border-accent/40 pointer-events-none z-[9998]"
-        animate={{ x: pos.x - (hovered ? 28 : 20), y: pos.y - (hovered ? 28 : 20), width: hovered ? 56 : 40, height: hovered ? 56 : 40 }}
+        animate={{
+          x: pos.x - (hovered ? 28 : 20),
+          y: pos.y - (hovered ? 28 : 20),
+          width: hovered ? 56 : 40,
+          height: hovered ? 56 : 40,
+        }}
         transition={{ type: "spring", stiffness: 200, damping: 25 }}
       />
     </>
@@ -246,8 +232,12 @@ function Nav({ page, onNavigate }: { page: Page; onNavigate: (p: Page) => void }
 
   const scrollTo = (id: string) => {
     setOpen(false);
-    if (page !== "home") { onNavigate("home"); setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }), 400); }
-    else document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    if (page !== "home") {
+      onNavigate("home");
+      setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }), 400);
+    } else {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   const links = ["About", "Skills", "Contact"];
@@ -266,7 +256,7 @@ function Nav({ page, onNavigate }: { page: Page; onNavigate: (p: Page) => void }
         }}
       >
         <button onClick={() => { onNavigate("home"); }} className="font-['DM_Serif_Display'] text-xl text-foreground tracking-tight">
-          YN<span className="text-accent">.</span>
+          JO<span className="text-accent">.</span>
         </button>
 
         <div className="hidden md:flex items-center gap-10">
@@ -277,16 +267,21 @@ function Nav({ page, onNavigate }: { page: Page; onNavigate: (p: Page) => void }
             Work
           </button>
           {links.map((l) => (
-            <button key={l} onClick={() => scrollTo(l.toLowerCase())}
-              className="font-['Inter'] text-sm font-light text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-widest uppercase">
+            <button
+              key={l}
+              onClick={() => scrollTo(l.toLowerCase())}
+              className="font-['Inter'] text-sm font-light text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-widest uppercase"
+            >
               {l}
             </button>
           ))}
         </div>
 
-        <a href="ortizvallejosjohi@gmail.com"
+        <a
+          href="ortizvallejosjohi@gmail.com"
           className="hidden md:flex items-center gap-2 font-['DM_Mono'] text-xs text-accent border border-accent/30 px-4 py-2 hover:bg-accent hover:text-accent-foreground transition-all duration-300"
-          data-hover="true">
+          data-hover="true"
+        >
           Available for work <ArrowUpRight size={12} />
         </a>
 
@@ -299,17 +294,27 @@ function Nav({ page, onNavigate }: { page: Page; onNavigate: (p: Page) => void }
         {open && (
           <motion.div
             className="fixed inset-0 z-40 bg-background/95 backdrop-blur-xl flex flex-col items-center justify-center gap-8"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
           >
-            <motion.button onClick={() => { setOpen(false); onNavigate("projects"); }}
+            <motion.button
+              onClick={() => { setOpen(false); onNavigate("projects"); }}
               className="font-['DM_Serif_Display'] text-5xl text-foreground hover:text-accent transition-colors"
-              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
               Work
             </motion.button>
             {links.map((l, i) => (
-              <motion.button key={l} onClick={() => scrollTo(l.toLowerCase())}
+              <motion.button
+                key={l}
+                onClick={() => scrollTo(l.toLowerCase())}
                 className="font-['DM_Serif_Display'] text-5xl text-foreground hover:text-accent transition-colors"
-                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: (i + 1) * 0.07 }}>
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: (i + 1) * 0.07 }}
+              >
                 {l}
               </motion.button>
             ))}
@@ -332,7 +337,10 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
       if (e.key === "ArrowLeft") setImgIdx((i) => (i - 1 + project.images.length) % project.images.length);
     };
     window.addEventListener("keydown", onKey);
-    return () => { document.body.style.overflow = ""; window.removeEventListener("keydown", onKey); };
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
+    };
   }, [onClose, project.images.length]);
 
   const catColor: Record<string, string> = {
@@ -345,16 +353,17 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
   return (
     <motion.div
       className="fixed inset-0 z-[100] flex items-end md:items-center justify-center"
-      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
     >
-      {/* Backdrop */}
       <motion.div
         className="absolute inset-0 bg-background/80 backdrop-blur-2xl"
         onClick={onClose}
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
       />
 
-      {/* Panel */}
       <motion.div
         className="relative w-full md:w-[90vw] max-w-6xl max-h-[92vh] md:max-h-[88vh] bg-card border border-border overflow-hidden flex flex-col md:flex-row"
         initial={{ opacity: 0, y: 60 }}
@@ -362,9 +371,7 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
         exit={{ opacity: 0, y: 60 }}
         transition={{ type: "spring", stiffness: 300, damping: 35 }}
       >
-        {/* Left — Preview */}
         <div className="relative w-full md:w-3/5 bg-muted flex-shrink-0 overflow-hidden" style={{ minHeight: "280px", maxHeight: "60vw" }}>
-          {/* Browser chrome mockup */}
           <div className="absolute top-0 left-0 right-0 z-10 bg-[#111115] border-b border-border/50 px-4 py-3 flex items-center gap-3">
             <div className="flex gap-1.5">
               <div className="w-3 h-3 rounded-full bg-[#ff5f57]" />
@@ -379,7 +386,6 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
             </div>
           </div>
 
-          {/* Image */}
           <AnimatePresence mode="wait">
             <motion.img
               key={imgIdx}
@@ -387,12 +393,13 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
               alt={`${project.title} preview ${imgIdx + 1}`}
               className="w-full h-full object-cover"
               style={{ marginTop: "40px", height: "calc(100% - 40px)" }}
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
             />
           </AnimatePresence>
 
-          {/* Image nav */}
           {project.images.length > 1 && (
             <>
               <button
@@ -410,21 +417,21 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
                 <ChevronRight size={16} />
               </button>
 
-              {/* Dots */}
               <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
                 {project.images.map((_, i) => (
-                  <button key={i} onClick={() => setImgIdx(i)}
+                  <button
+                    key={i}
+                    onClick={() => setImgIdx(i)}
                     className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${i === imgIdx ? "bg-accent w-4" : "bg-foreground/30"}`}
-                    data-hover="true" />
+                    data-hover="true"
+                  />
                 ))}
               </div>
             </>
           )}
         </div>
 
-        {/* Right — Info */}
         <div className="flex flex-col flex-1 overflow-y-auto p-8 md:p-10 scrollbar-hide">
-          {/* Header */}
           <div className="flex items-start justify-between mb-8 gap-4">
             <div>
               <div className="flex items-center gap-3 mb-3">
@@ -445,46 +452,51 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
                 {project.role}
               </p>
             </div>
-            <button onClick={onClose}
+            <button
+              onClick={onClose}
               className="flex-shrink-0 w-9 h-9 border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-all"
-              data-hover="true">
+              data-hover="true"
+            >
               <X size={16} />
             </button>
           </div>
 
-          {/* Description */}
           <p className="font-['Inter'] text-sm font-light text-muted-foreground leading-relaxed mb-8">
             {project.longDescription}
           </p>
 
-          {/* Stack */}
           <div className="mb-8">
             <div className="font-['DM_Mono'] text-[10px] text-muted-foreground tracking-widest uppercase mb-3">
               Tools & Stack
             </div>
             <div className="flex flex-wrap gap-2">
               {project.stack.map((s) => (
-                <span key={s}
-                  className="font-['DM_Mono'] text-xs text-foreground/70 border border-border px-3 py-1 hover:border-accent/40 hover:text-foreground transition-all">
+                <span
+                  key={s}
+                  className="font-['DM_Mono'] text-xs text-foreground/70 border border-border px-3 py-1 hover:border-accent/40 hover:text-foreground transition-all"
+                >
                   {s}
                 </span>
               ))}
             </div>
           </div>
 
-          {/* Links */}
           <div className="mt-auto pt-6 border-t border-border flex gap-4">
             {project.liveUrl && (
-              <a href={project.liveUrl}
+              <a
+                href={project.liveUrl}
                 className="flex items-center gap-2 font-['DM_Mono'] text-xs text-accent border border-accent/30 px-5 py-2.5 hover:bg-accent hover:text-accent-foreground transition-all duration-300"
-                data-hover="true">
+                data-hover="true"
+              >
                 <Globe size={12} /> Live Preview
               </a>
             )}
             {project.repoUrl && (
-              <a href={project.repoUrl}
+              <a
+                href={project.repoUrl}
                 className="flex items-center gap-2 font-['DM_Mono'] text-xs text-foreground border border-border px-5 py-2.5 hover:border-foreground/40 transition-all duration-300"
-                data-hover="true">
+                data-hover="true"
+              >
                 <Code2 size={12} /> Source Code
               </a>
             )}
@@ -513,10 +525,11 @@ function ProjectsPage({ onBack }: { onBack: () => void }) {
   return (
     <motion.div
       className="min-h-screen bg-background"
-      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
       transition={{ duration: 0.4 }}
     >
-      {/* Header */}
       <div className="px-8 md:px-16 pt-32 pb-16 border-b border-border">
         <div className="max-w-7xl mx-auto">
           <button
@@ -543,7 +556,6 @@ function ProjectsPage({ onBack }: { onBack: () => void }) {
         </div>
       </div>
 
-      {/* Filter bar */}
       <div className="sticky top-[73px] z-30 bg-background/90 backdrop-blur-xl border-b border-border">
         <div className="max-w-7xl mx-auto px-8 md:px-16 flex gap-0 overflow-x-auto scrollbar-hide">
           {cats.map((c) => (
@@ -566,7 +578,6 @@ function ProjectsPage({ onBack }: { onBack: () => void }) {
         </div>
       </div>
 
-      {/* Grid */}
       <div className="max-w-7xl mx-auto px-8 md:px-16 py-16">
         <motion.div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border" layout>
           <AnimatePresence>
@@ -582,7 +593,6 @@ function ProjectsPage({ onBack }: { onBack: () => void }) {
                 onClick={() => setSelected(project)}
                 data-hover="true"
               >
-                {/* Image */}
                 <div className="relative overflow-hidden aspect-[4/3]">
                   <img
                     src={project.image}
@@ -591,7 +601,6 @@ function ProjectsPage({ onBack }: { onBack: () => void }) {
                   />
                   <div className="absolute inset-0 bg-background/10 group-hover:bg-background/50 transition-all duration-500" />
 
-                  {/* Hover icon */}
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div className="w-12 h-12 bg-accent flex items-center justify-center">
                       <ExternalLink size={18} className="text-accent-foreground" />
@@ -599,7 +608,6 @@ function ProjectsPage({ onBack }: { onBack: () => void }) {
                   </div>
                 </div>
 
-                {/* Info */}
                 <div className="p-6 border-t border-border">
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-['DM_Mono'] text-[10px] text-muted-foreground tracking-widest uppercase">
@@ -635,7 +643,6 @@ function ProjectsPage({ onBack }: { onBack: () => void }) {
         </motion.div>
       </div>
 
-      {/* Modal */}
       <AnimatePresence>
         {selected && <ProjectModal project={selected} onClose={() => setSelected(null)} />}
       </AnimatePresence>
@@ -654,36 +661,66 @@ function Hero({ onProjectsClick }: { onProjectsClick: () => void }) {
 
   return (
     <section id="hero" className="relative min-h-screen flex flex-col justify-end px-8 md:px-16 pb-20 overflow-hidden">
-      <div className="absolute inset-0 opacity-[0.04] pointer-events-none"
-        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`, backgroundRepeat: "repeat", backgroundSize: "200px" }} />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full opacity-10 pointer-events-none"
-        style={{ background: "radial-gradient(circle, #e8a020 0%, transparent 70%)" }} />
-      <motion.div className="absolute top-8 right-8 md:right-16 font-['DM_Mono'] text-xs text-muted-foreground tracking-widest"
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
-      </motion.div>
-      <motion.div className="absolute right-8 md:right-16 top-1/2 -translate-y-1/2 font-['DM_Mono'] text-[10px] text-muted-foreground tracking-[0.3em] uppercase"
-        style={{ writingMode: "vertical-rl" }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2 }}>
+      <div
+        className="absolute inset-0 opacity-[0.04] pointer-events-none"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+          backgroundRepeat: "repeat",
+          backgroundSize: "200px",
+        }}
+      />
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full opacity-10 pointer-events-none"
+        style={{ background: "radial-gradient(circle, #e8a020 0%, transparent 70%)" }}
+      />
+      <motion.div
+        className="absolute top-8 right-8 md:right-16 font-['DM_Mono'] text-xs text-muted-foreground tracking-widest"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1 }}
+      />
+      <motion.div
+        className="absolute right-8 md:right-16 top-1/2 -translate-y-1/2 font-['DM_Mono'] text-[10px] text-muted-foreground tracking-[0.3em] uppercase"
+        style={{ writingMode: "vertical-rl" }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.2 }}
+      >
         Scroll to explore
       </motion.div>
 
       <div className="max-w-7xl">
-        <motion.div className="font-['DM_Mono'] text-xs text-accent tracking-[0.4em] uppercase mb-8"
-          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+        <motion.div
+          className="font-['DM_Mono'] text-xs text-accent tracking-[0.4em] uppercase mb-8"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
           Portfolio — Multidisciplinary Creative
         </motion.div>
-        <motion.h1 className="font-['DM_Serif_Display'] text-[clamp(3.5rem,10vw,9rem)] leading-[0.9] text-foreground mb-6"
-          initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.8 }}>
-          Johi<br /><span className="text-accent">Ortiz</span>
+        <motion.h1
+          className="font-['DM_Serif_Display'] text-[clamp(3.5rem,10vw,9rem)] leading-[0.9] text-foreground mb-6"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.8 }}
+        >
+          Johi
+          <br />
+          <span className="text-accent">Ortiz</span>
         </motion.h1>
 
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
           <motion.div className="flex items-center gap-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}>
             <div className="w-10 h-px bg-accent" />
             <AnimatePresence mode="wait">
-              <motion.span key={roleIdx}
+              <motion.span
+                key={roleIdx}
                 className="font-['Inter'] text-lg md:text-xl font-light text-muted-foreground"
-                initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.35 }}>
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.35 }}
+              >
                 {ROLES[roleIdx]}
               </motion.span>
             </AnimatePresence>
@@ -692,7 +729,9 @@ function Hero({ onProjectsClick }: { onProjectsClick: () => void }) {
           <motion.button
             onClick={onProjectsClick}
             className="flex items-center gap-3 group"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1 }}
             data-hover="true"
           >
             <span className="font-['DM_Mono'] text-xs text-muted-foreground tracking-widest uppercase group-hover:text-accent transition-colors">
@@ -702,10 +741,17 @@ function Hero({ onProjectsClick }: { onProjectsClick: () => void }) {
           </motion.button>
         </div>
 
-        <motion.div className="absolute bottom-8 left-8 md:left-16 flex items-center gap-3"
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.4 }}>
-          <motion.div className="w-px h-12 bg-muted-foreground/30 origin-top"
-            animate={{ scaleY: [1, 0.3, 1] }} transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }} />
+        <motion.div
+          className="absolute bottom-8 left-8 md:left-16 flex items-center gap-3"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.4 }}
+        >
+          <motion.div
+            className="w-px h-12 bg-muted-foreground/30 origin-top"
+            animate={{ scaleY: [1, 0.3, 1] }}
+            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+          />
           <span className="font-['DM_Mono'] text-[10px] text-muted-foreground tracking-widest uppercase">Scroll</span>
         </motion.div>
       </div>
@@ -717,7 +763,13 @@ function About() {
   return (
     <section id="about" className="px-8 md:px-16 py-32 md:py-48 border-t border-border">
       <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 md:gap-24 items-center">
-        <motion.div className="relative" initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8 }}>
+        <motion.div
+          className="relative"
+          initial={{ opacity: 0, x: -30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8 }}
+        >
           <div className="relative overflow-hidden aspect-[4/5] bg-card">
             <img src={perfilPhoto} alt="Portrait" className="w-full h-full object-cover object-top hover:scale-105 transition-all duration-700" />
             <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
@@ -726,10 +778,19 @@ function About() {
           <div className="absolute -top-4 -left-4 w-16 h-16 border border-border pointer-events-none" />
         </motion.div>
 
-        <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8, delay: 0.15 }}>
+        <motion.div
+          initial={{ opacity: 0, x: 30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, delay: 0.15 }}
+        >
           <div className="font-['DM_Mono'] text-xs text-accent tracking-[0.4em] uppercase mb-6">About</div>
           <h2 className="font-['DM_Serif_Display'] text-4xl md:text-5xl text-foreground leading-tight mb-8">
-            I build things that<br /><em>look good</em> and<br />work even better.
+            I build things that
+            <br />
+            <em>look good</em> and
+            <br />
+            work even better.
           </h2>
           <div className="space-y-4 font-['Inter'] text-sm font-light text-muted-foreground leading-relaxed">
             <p>I am a multidisciplinary creative with over 8 years of experience across software development, visual design, illustration, and photography.</p>
@@ -750,57 +811,24 @@ function About() {
   );
 }
 
-function Skills() {
-  return (
-    <section id="skills" className="px-8 md:px-16 py-32 md:py-48 border-t border-border">
-      <div className="max-w-7xl mx-auto">
-        <motion.div className="mb-16" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-          <div className="font-['DM_Mono'] text-xs text-accent tracking-[0.4em] uppercase mb-4">Expertise</div>
-          <h2 className="font-['DM_Serif_Display'] text-4xl md:text-6xl text-foreground">What I do</h2>
-        </motion.div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-border">
-          {SKILLS.map((skill, i) => (
-            <motion.div key={skill.discipline} className="bg-background p-8 group hover:bg-card transition-colors duration-300"
-              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
-              <div className="font-['DM_Serif_Display'] text-4xl text-accent/40 group-hover:text-accent transition-colors duration-300 mb-6">{skill.icon}</div>
-              <div className="font-['DM_Serif_Display'] text-xl text-foreground mb-6">{skill.discipline}</div>
-              <ul className="space-y-2">
-                {skill.items.map((item) => (
-                  <li key={item} className="font-['Inter'] text-xs font-light text-muted-foreground flex items-center gap-2">
-                    <span className="w-1 h-1 rounded-full bg-accent/50 flex-shrink-0" />{item}
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          ))}
-        </div>
-
-        <div className="mt-20 overflow-hidden border-y border-border py-5">
-          <motion.div className="flex gap-12 whitespace-nowrap"
-            animate={{ x: ["0%", "-50%"] }} transition={{ duration: 30, repeat: Infinity, ease: "linear" }}>
-            {[...Array(2)].map((_, ri) =>
-              ["React", "TypeScript", "Node.js", "Figma", "Illustrator", "Lightroom", "Procreate", "PostgreSQL", "Docker", "Next.js", "GraphQL", "Photoshop"].map((t) => (
-                <span key={`${t}-${ri}`} className="font-['DM_Mono'] text-sm text-muted-foreground/50 tracking-widest uppercase">
-                  {t} <span className="text-accent/40">✦</span>
-                </span>
-              ))
-            )}
-          </motion.div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function Contact() {
   return (
     <section id="contact" className="px-8 md:px-16 py-32 md:py-48 border-t border-border">
       <div className="max-w-7xl mx-auto">
-        <motion.div className="max-w-3xl" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
+        <motion.div
+          className="max-w-3xl"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
           <div className="font-['DM_Mono'] text-xs text-accent tracking-[0.4em] uppercase mb-6">Get in touch</div>
           <h2 className="font-['DM_Serif_Display'] text-5xl md:text-7xl text-foreground leading-tight mb-10">
-            Let&apos;s create<br />something<br /><em className="text-accent">extraordinary.</em>
+            Let&apos;s create
+            <br />
+            something
+            <br />
+            <em className="text-accent">extraordinary.</em>
           </h2>
           <p className="font-['Inter'] text-sm font-light text-muted-foreground leading-relaxed mb-12 max-w-lg">
             I am currently open to freelance projects, collaborations, and full-time opportunities. If you have an idea — big or small — I would love to hear about it.
@@ -813,11 +841,21 @@ function Contact() {
           </a>
         </motion.div>
 
-        <motion.div className="mt-24 pt-10 border-t border-border flex flex-col md:flex-row justify-between items-start md:items-center gap-6"
-          initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.3 }}>
+        <motion.div
+          className="mt-24 pt-10 border-t border-border flex flex-col md:flex-row justify-between items-start md:items-center gap-6"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.3 }}
+        >
           <div className="font-['DM_Mono'] text-xs text-muted-foreground">© 2026 — Johi Ortiz. All rights reserved.</div>
           <div className="flex items-center gap-6">
-            {[{ icon: Github, label: "GitHub", href: "#" }, { icon: Instagram, label: "Instagram", href: "#" }, { icon: Linkedin, label: "LinkedIn", href: "#" }, { icon: Mail, label: "Email", href: "ortizvallejosjohi@gmail.com" }].map(({ icon: Icon, label, href }) => (
+            {[
+              { icon: Github, label: "GitHub", href: "#" },
+              { icon: Instagram, label: "Instagram", href: "#" },
+              { icon: Linkedin, label: "LinkedIn", href: "#" },
+              { icon: Mail, label: "Email", href: "ortizvallejosjohi@gmail.com" },
+            ].map(({ icon: Icon, label, href }) => (
               <a key={label} href={href} aria-label={label} className="text-muted-foreground hover:text-accent transition-colors duration-300" data-hover="true">
                 <Icon size={16} />
               </a>
