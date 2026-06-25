@@ -1,10 +1,14 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import perfilPhoto from "@/imports/perfilphoto.png";
 import { motion, AnimatePresence } from "motion/react";
-import { ArrowUpRight, Menu, X, Github, Instagram, Linkedin, Mail, ExternalLink } from "lucide-react";
+import {
+  ArrowUpRight, Menu, X, Github, Instagram, Linkedin, Mail,
+  ArrowLeft, ExternalLink, ChevronLeft, ChevronRight, Globe, Code2
+} from "lucide-react";
 
-// ─── Types ──────────────────────────────────────────────────────────────────
+// ─── Types ───────────────────────────────────────────────────────────────────
 type Category = "all" | "dev" | "design" | "illustration" | "photo";
+type Page = "home" | "projects";
 
 interface Project {
   id: number;
@@ -12,8 +16,14 @@ interface Project {
   category: Exclude<Category, "all">;
   tag: string;
   image: string;
+  images: string[];
   year: string;
   description: string;
+  longDescription: string;
+  stack: string[];
+  liveUrl?: string;
+  repoUrl?: string;
+  role: string;
 }
 
 // ─── Data ────────────────────────────────────────────────────────────────────
@@ -25,72 +35,146 @@ const PROJECTS: Project[] = [
     title: "Archi Studio",
     category: "dev",
     tag: "Web App",
-    image: "https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=800&h=600&fit=crop&auto=format",
+    image: "https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=1200&h=800&fit=crop&auto=format",
+    images: [
+      "https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=1200&h=800&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=800&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=1200&h=800&fit=crop&auto=format",
+    ],
     year: "2024",
     description: "Architecture firm platform with 3D visualization tools",
+    longDescription: "A full-stack web platform for an architecture studio that combines portfolio management with real-time 3D visualization. Clients can explore floor plans, request revisions, and sign off on designs — all within a single interface. Built with React, Three.js, and a Node.js backend with WebSocket-driven collaboration.",
+    stack: ["React", "Three.js", "Node.js", "PostgreSQL", "WebSockets", "Tailwind"],
+    role: "Fullstack Developer",
+    liveUrl: "#",
+    repoUrl: "#",
   },
   {
     id: 2,
     title: "Bloom Brand",
     category: "design",
     tag: "Brand Identity",
-    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop&auto=format",
+    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&h=800&fit=crop&auto=format",
+    images: [
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&h=800&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1586495777744-4e6ffeef8041?w=1200&h=800&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=1200&h=800&fit=crop&auto=format",
+    ],
     year: "2024",
     description: "Full brand system for a sustainable cosmetics line",
+    longDescription: "Complete visual identity for a new generation sustainable cosmetics brand. From logotype and color system to packaging design, art direction for campaigns, and a full brand guidelines document. The system reflects the brand's commitment to clean ingredients through a warm, botanical visual language.",
+    stack: ["Figma", "Illustrator", "Photoshop", "After Effects"],
+    role: "Brand Designer",
+    liveUrl: "#",
   },
   {
     id: 3,
     title: "Nocturnal Series",
     category: "illustration",
     tag: "Editorial",
-    image: "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=800&h=600&fit=crop&auto=format",
+    image: "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=1200&h=800&fit=crop&auto=format",
+    images: [
+      "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=1200&h=800&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1518640467707-6811f4a6ab73?w=1200&h=800&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1569982175971-d92b01cf8694?w=1200&h=800&fit=crop&auto=format",
+    ],
     year: "2023",
     description: "12-piece illustration series for a literary magazine",
+    longDescription: "A series of twelve editorial illustrations commissioned by a literary magazine exploring themes of memory and solitude. Each piece pairs a short story with a full-page illustration using a limited palette of deep indigo, ochre, and raw white. The series was later exhibited at a cultural space in Madrid.",
+    stack: ["Procreate", "Photoshop", "Illustrator"],
+    role: "Illustrator",
+    liveUrl: "#",
   },
   {
     id: 4,
     title: "Urban Fragments",
     category: "photo",
     tag: "Photography",
-    image: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=800&h=600&fit=crop&auto=format",
+    image: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1200&h=800&fit=crop&auto=format",
+    images: [
+      "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1200&h=800&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=1200&h=800&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=1200&h=800&fit=crop&auto=format",
+    ],
     year: "2024",
     description: "Street photography documenting metropolitan loneliness",
+    longDescription: "A documentary photography project that captures the quiet spaces between moments in a large city. Shot over eighteen months across Madrid, Barcelona, and Lisbon, the series uses available light and tight compositions to frame the emotional distance that can exist in the most populated places on earth.",
+    stack: ["Sony A7IV", "Lightroom", "Capture One"],
+    role: "Photographer",
+    liveUrl: "#",
   },
   {
     id: 5,
     title: "Orbis Dashboard",
     category: "dev",
     tag: "SaaS",
-    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop&auto=format",
+    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&h=800&fit=crop&auto=format",
+    images: [
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&h=800&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&h=800&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=1200&h=800&fit=crop&auto=format",
+    ],
     year: "2023",
     description: "Analytics platform for creative agencies",
+    longDescription: "A SaaS analytics platform built specifically for creative agencies to track project profitability, team capacity, and client retention. Features real-time dashboards, automated reporting, and integrations with tools like Notion, Harvest, and Slack. Grew to 200+ agency users within 6 months of launch.",
+    stack: ["Next.js", "TypeScript", "Prisma", "PostgreSQL", "Recharts", "Stripe"],
+    role: "Fullstack Developer",
+    liveUrl: "#",
+    repoUrl: "#",
   },
   {
     id: 6,
     title: "Solstice Poster",
     category: "design",
     tag: "Print",
-    image: "https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?w=800&h=600&fit=crop&auto=format",
+    image: "https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?w=1200&h=800&fit=crop&auto=format",
+    images: [
+      "https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?w=1200&h=800&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1615022630427-a1d81d0d52d2?w=1200&h=800&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=1200&h=800&fit=crop&auto=format",
+    ],
     year: "2023",
-    description: "Limited edition poster for a music festival",
+    description: "Limited edition poster series for a music festival",
+    longDescription: "A three-poster limited edition series for Solstice, an electronic music festival in Valencia. Each poster corresponds to one night of the festival and uses a typographic system that transforms into a visual score. Printed offset in three Pantone colors on uncoated stock, edition of 500.",
+    stack: ["Illustrator", "Figma", "Photoshop"],
+    role: "Graphic Designer",
+    liveUrl: "#",
   },
   {
     id: 7,
     title: "Quiet Hours",
     category: "photo",
     tag: "Documentary",
-    image: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=800&h=600&fit=crop&auto=format",
+    image: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=1200&h=800&fit=crop&auto=format",
+    images: [
+      "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=1200&h=800&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1550399105-c4db5fb85c18?w=1200&h=800&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&h=800&fit=crop&auto=format",
+    ],
     year: "2024",
     description: "Documentary series on vanishing crafts",
+    longDescription: "An ongoing documentary project portraying the last practitioners of traditional crafts across rural Spain. The photographs are accompanied by recorded oral histories and will be published as a photobook in 2025. Currently at 34 portraits across 11 trades in 8 provinces.",
+    stack: ["Fujifilm GFX100", "Lightroom", "Capture One"],
+    role: "Photographer & Art Director",
+    liveUrl: "#",
   },
   {
     id: 8,
     title: "Mycelium",
     category: "illustration",
     tag: "Digital Art",
-    image: "https://images.unsplash.com/photo-1518640467707-6811f4a6ab73?w=800&h=600&fit=crop&auto=format",
+    image: "https://images.unsplash.com/photo-1518640467707-6811f4a6ab73?w=1200&h=800&fit=crop&auto=format",
+    images: [
+      "https://images.unsplash.com/photo-1518640467707-6811f4a6ab73?w=1200&h=800&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1614854262318-831574f15f1f?w=1200&h=800&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=1200&h=800&fit=crop&auto=format",
+    ],
     year: "2024",
     description: "Generative organic illustration system",
+    longDescription: "A system of generative digital illustrations exploring the visual language of fungi and root networks. Each piece is produced by combining hand-drawn elements with algorithmic processes written in p5.js. The series includes 40 unique pieces and was released as a limited NFT collection.",
+    stack: ["Procreate", "p5.js", "Photoshop"],
+    role: "Illustrator & Creative Coder",
+    liveUrl: "#",
   },
 ];
 
@@ -117,7 +201,7 @@ const SKILLS = [
   },
 ];
 
-// ─── Cursor ──────────────────────────────────────────────────────────────────
+// ─── Cursor ───────────────────────────────────────────────────────────────────
 function Cursor() {
   const [pos, setPos] = useState({ x: -100, y: -100 });
   const [hovered, setHovered] = useState(false);
@@ -130,10 +214,7 @@ function Cursor() {
     };
     window.addEventListener("mousemove", move);
     window.addEventListener("mouseover", over);
-    return () => {
-      window.removeEventListener("mousemove", move);
-      window.removeEventListener("mouseover", over);
-    };
+    return () => { window.removeEventListener("mousemove", move); window.removeEventListener("mouseover", over); };
   }, []);
 
   return (
@@ -145,20 +226,15 @@ function Cursor() {
       />
       <motion.div
         className="fixed top-0 left-0 rounded-full border border-accent/40 pointer-events-none z-[9998]"
-        animate={{
-          x: pos.x - (hovered ? 28 : 20),
-          y: pos.y - (hovered ? 28 : 20),
-          width: hovered ? 56 : 40,
-          height: hovered ? 56 : 40,
-        }}
+        animate={{ x: pos.x - (hovered ? 28 : 20), y: pos.y - (hovered ? 28 : 20), width: hovered ? 56 : 40, height: hovered ? 56 : 40 }}
         transition={{ type: "spring", stiffness: 200, damping: 25 }}
       />
     </>
   );
 }
 
-// ─── Nav ─────────────────────────────────────────────────────────────────────
-function Nav() {
+// ─── Nav ──────────────────────────────────────────────────────────────────────
+function Nav({ page, onNavigate }: { page: Page; onNavigate: (p: Page) => void }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -168,12 +244,13 @@ function Nav() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const links = ["Work", "About", "Skills", "Contact"];
-
   const scrollTo = (id: string) => {
     setOpen(false);
-    document.getElementById(id.toLowerCase())?.scrollIntoView({ behavior: "smooth" });
+    if (page !== "home") { onNavigate("home"); setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }), 400); }
+    else document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
+
+  const links = ["About", "Skills", "Contact"];
 
   return (
     <>
@@ -188,38 +265,32 @@ function Nav() {
           borderBottom: scrolled ? "1px solid rgba(240,237,230,0.06)" : "none",
         }}
       >
-        <button
-          onClick={() => scrollTo("hero")}
-          className="font-['DM_Serif_Display'] text-xl text-foreground tracking-tight"
-        >
-          JO<span className="text-accent">.</span>
+        <button onClick={() => { onNavigate("home"); }} className="font-['DM_Serif_Display'] text-xl text-foreground tracking-tight">
+          YN<span className="text-accent">.</span>
         </button>
 
         <div className="hidden md:flex items-center gap-10">
+          <button
+            onClick={() => onNavigate("projects")}
+            className={`font-['Inter'] text-sm font-light tracking-widest uppercase transition-colors duration-300 ${page === "projects" ? "text-accent" : "text-muted-foreground hover:text-foreground"}`}
+          >
+            Work
+          </button>
           {links.map((l) => (
-            <button
-              key={l}
-              onClick={() => scrollTo(l)}
-              className="font-['Inter'] text-sm font-light text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-widest uppercase"
-            >
+            <button key={l} onClick={() => scrollTo(l.toLowerCase())}
+              className="font-['Inter'] text-sm font-light text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-widest uppercase">
               {l}
             </button>
           ))}
         </div>
 
-        <a
-          href="mailto:hello@yourdomain.com"
+        <a href="ortizvallejosjohi@gmail.com"
           className="hidden md:flex items-center gap-2 font-['DM_Mono'] text-xs text-accent border border-accent/30 px-4 py-2 hover:bg-accent hover:text-accent-foreground transition-all duration-300"
-          data-hover="true"
-        >
+          data-hover="true">
           Available for work <ArrowUpRight size={12} />
         </a>
 
-        <button
-          className="md:hidden text-foreground"
-          onClick={() => setOpen(!open)}
-          data-hover="true"
-        >
+        <button className="md:hidden text-foreground" onClick={() => setOpen(!open)} data-hover="true">
           {open ? <X size={22} /> : <Menu size={22} />}
         </button>
       </motion.nav>
@@ -228,19 +299,17 @@ function Nav() {
         {open && (
           <motion.div
             className="fixed inset-0 z-40 bg-background/95 backdrop-blur-xl flex flex-col items-center justify-center gap-8"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
           >
+            <motion.button onClick={() => { setOpen(false); onNavigate("projects"); }}
+              className="font-['DM_Serif_Display'] text-5xl text-foreground hover:text-accent transition-colors"
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+              Work
+            </motion.button>
             {links.map((l, i) => (
-              <motion.button
-                key={l}
-                onClick={() => scrollTo(l)}
+              <motion.button key={l} onClick={() => scrollTo(l.toLowerCase())}
                 className="font-['DM_Serif_Display'] text-5xl text-foreground hover:text-accent transition-colors"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.07 }}
-              >
+                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: (i + 1) * 0.07 }}>
                 {l}
               </motion.button>
             ))}
@@ -251,8 +320,331 @@ function Nav() {
   );
 }
 
-// ─── Hero ─────────────────────────────────────────────────────────────────────
-function Hero() {
+// ─── Project Modal ────────────────────────────────────────────────────────────
+function ProjectModal({ project, onClose }: { project: Project; onClose: () => void }) {
+  const [imgIdx, setImgIdx] = useState(0);
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowRight") setImgIdx((i) => (i + 1) % project.images.length);
+      if (e.key === "ArrowLeft") setImgIdx((i) => (i - 1 + project.images.length) % project.images.length);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => { document.body.style.overflow = ""; window.removeEventListener("keydown", onKey); };
+  }, [onClose, project.images.length]);
+
+  const catColor: Record<string, string> = {
+    dev: "#4a9eff",
+    design: "#e8a020",
+    illustration: "#c97aff",
+    photo: "#60c460",
+  };
+
+  return (
+    <motion.div
+      className="fixed inset-0 z-[100] flex items-end md:items-center justify-center"
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+    >
+      {/* Backdrop */}
+      <motion.div
+        className="absolute inset-0 bg-background/80 backdrop-blur-2xl"
+        onClick={onClose}
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+      />
+
+      {/* Panel */}
+      <motion.div
+        className="relative w-full md:w-[90vw] max-w-6xl max-h-[92vh] md:max-h-[88vh] bg-card border border-border overflow-hidden flex flex-col md:flex-row"
+        initial={{ opacity: 0, y: 60 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 60 }}
+        transition={{ type: "spring", stiffness: 300, damping: 35 }}
+      >
+        {/* Left — Preview */}
+        <div className="relative w-full md:w-3/5 bg-muted flex-shrink-0 overflow-hidden" style={{ minHeight: "280px", maxHeight: "60vw" }}>
+          {/* Browser chrome mockup */}
+          <div className="absolute top-0 left-0 right-0 z-10 bg-[#111115] border-b border-border/50 px-4 py-3 flex items-center gap-3">
+            <div className="flex gap-1.5">
+              <div className="w-3 h-3 rounded-full bg-[#ff5f57]" />
+              <div className="w-3 h-3 rounded-full bg-[#febc2e]" />
+              <div className="w-3 h-3 rounded-full bg-[#28c840]" />
+            </div>
+            <div className="flex-1 bg-background/60 rounded-sm px-3 py-1 flex items-center gap-2">
+              <Globe size={10} className="text-muted-foreground" />
+              <span className="font-['DM_Mono'] text-[10px] text-muted-foreground truncate">
+                {project.liveUrl !== "#" ? project.liveUrl : `yourportfolio.com/projects/${project.title.toLowerCase().replace(/\s/g, "-")}`}
+              </span>
+            </div>
+          </div>
+
+          {/* Image */}
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={imgIdx}
+              src={project.images[imgIdx]}
+              alt={`${project.title} preview ${imgIdx + 1}`}
+              className="w-full h-full object-cover"
+              style={{ marginTop: "40px", height: "calc(100% - 40px)" }}
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            />
+          </AnimatePresence>
+
+          {/* Image nav */}
+          {project.images.length > 1 && (
+            <>
+              <button
+                onClick={() => setImgIdx((i) => (i - 1 + project.images.length) % project.images.length)}
+                className="absolute left-3 top-1/2 -translate-y-1/2 mt-5 w-9 h-9 bg-background/80 backdrop-blur-sm border border-border flex items-center justify-center text-foreground hover:bg-accent hover:text-accent-foreground hover:border-accent transition-all duration-200"
+                data-hover="true"
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <button
+                onClick={() => setImgIdx((i) => (i + 1) % project.images.length)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 mt-5 w-9 h-9 bg-background/80 backdrop-blur-sm border border-border flex items-center justify-center text-foreground hover:bg-accent hover:text-accent-foreground hover:border-accent transition-all duration-200"
+                data-hover="true"
+              >
+                <ChevronRight size={16} />
+              </button>
+
+              {/* Dots */}
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
+                {project.images.map((_, i) => (
+                  <button key={i} onClick={() => setImgIdx(i)}
+                    className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${i === imgIdx ? "bg-accent w-4" : "bg-foreground/30"}`}
+                    data-hover="true" />
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* Right — Info */}
+        <div className="flex flex-col flex-1 overflow-y-auto p-8 md:p-10 scrollbar-hide">
+          {/* Header */}
+          <div className="flex items-start justify-between mb-8 gap-4">
+            <div>
+              <div className="flex items-center gap-3 mb-3">
+                <span
+                  className="font-['DM_Mono'] text-[10px] tracking-widest uppercase px-2 py-1 border"
+                  style={{ color: catColor[project.category], borderColor: `${catColor[project.category]}40` }}
+                >
+                  {project.tag}
+                </span>
+                <span className="font-['DM_Mono'] text-[10px] text-muted-foreground tracking-widest">
+                  {project.year}
+                </span>
+              </div>
+              <h2 className="font-['DM_Serif_Display'] text-3xl md:text-4xl text-foreground leading-tight">
+                {project.title}
+              </h2>
+              <p className="font-['DM_Mono'] text-xs text-muted-foreground mt-2 tracking-wider">
+                {project.role}
+              </p>
+            </div>
+            <button onClick={onClose}
+              className="flex-shrink-0 w-9 h-9 border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-all"
+              data-hover="true">
+              <X size={16} />
+            </button>
+          </div>
+
+          {/* Description */}
+          <p className="font-['Inter'] text-sm font-light text-muted-foreground leading-relaxed mb-8">
+            {project.longDescription}
+          </p>
+
+          {/* Stack */}
+          <div className="mb-8">
+            <div className="font-['DM_Mono'] text-[10px] text-muted-foreground tracking-widest uppercase mb-3">
+              Tools & Stack
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {project.stack.map((s) => (
+                <span key={s}
+                  className="font-['DM_Mono'] text-xs text-foreground/70 border border-border px-3 py-1 hover:border-accent/40 hover:text-foreground transition-all">
+                  {s}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Links */}
+          <div className="mt-auto pt-6 border-t border-border flex gap-4">
+            {project.liveUrl && (
+              <a href={project.liveUrl}
+                className="flex items-center gap-2 font-['DM_Mono'] text-xs text-accent border border-accent/30 px-5 py-2.5 hover:bg-accent hover:text-accent-foreground transition-all duration-300"
+                data-hover="true">
+                <Globe size={12} /> Live Preview
+              </a>
+            )}
+            {project.repoUrl && (
+              <a href={project.repoUrl}
+                className="flex items-center gap-2 font-['DM_Mono'] text-xs text-foreground border border-border px-5 py-2.5 hover:border-foreground/40 transition-all duration-300"
+                data-hover="true">
+                <Code2 size={12} /> Source Code
+              </a>
+            )}
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+// ─── Projects Page ────────────────────────────────────────────────────────────
+function ProjectsPage({ onBack }: { onBack: () => void }) {
+  const [active, setActive] = useState<Category>("all");
+  const [selected, setSelected] = useState<Project | null>(null);
+
+  const cats: { key: Category; label: string; count: number }[] = [
+    { key: "all", label: "All", count: PROJECTS.length },
+    { key: "dev", label: "Development", count: PROJECTS.filter((p) => p.category === "dev").length },
+    { key: "design", label: "Design", count: PROJECTS.filter((p) => p.category === "design").length },
+    { key: "illustration", label: "Illustration", count: PROJECTS.filter((p) => p.category === "illustration").length },
+    { key: "photo", label: "Photography", count: PROJECTS.filter((p) => p.category === "photo").length },
+  ];
+
+  const filtered = active === "all" ? PROJECTS : PROJECTS.filter((p) => p.category === active);
+
+  return (
+    <motion.div
+      className="min-h-screen bg-background"
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      transition={{ duration: 0.4 }}
+    >
+      {/* Header */}
+      <div className="px-8 md:px-16 pt-32 pb-16 border-b border-border">
+        <div className="max-w-7xl mx-auto">
+          <button
+            onClick={onBack}
+            className="flex items-center gap-2 font-['DM_Mono'] text-xs text-muted-foreground hover:text-foreground transition-colors mb-10 group"
+            data-hover="true"
+          >
+            <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" /> Back to home
+          </button>
+
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+            <div>
+              <div className="font-['DM_Mono'] text-xs text-accent tracking-[0.4em] uppercase mb-4">
+                Selected Work
+              </div>
+              <h1 className="font-['DM_Serif_Display'] text-5xl md:text-7xl text-foreground">
+                Projects
+              </h1>
+            </div>
+            <p className="max-w-xs font-['Inter'] text-sm font-light text-muted-foreground leading-relaxed">
+              A curated selection of work across development, design, illustration, and photography.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Filter bar */}
+      <div className="sticky top-[73px] z-30 bg-background/90 backdrop-blur-xl border-b border-border">
+        <div className="max-w-7xl mx-auto px-8 md:px-16 flex gap-0 overflow-x-auto scrollbar-hide">
+          {cats.map((c) => (
+            <button
+              key={c.key}
+              onClick={() => setActive(c.key)}
+              className={`flex items-center gap-2 px-5 py-4 font-['DM_Mono'] text-xs tracking-widest uppercase border-b-2 whitespace-nowrap transition-all duration-300 ${
+                active === c.key
+                  ? "border-accent text-accent"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              }`}
+              data-hover="true"
+            >
+              {c.label}
+              <span className={`text-[10px] ${active === c.key ? "text-accent/60" : "text-muted-foreground/40"}`}>
+                {c.count}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Grid */}
+      <div className="max-w-7xl mx-auto px-8 md:px-16 py-16">
+        <motion.div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border" layout>
+          <AnimatePresence>
+            {filtered.map((project, i) => (
+              <motion.article
+                key={project.id}
+                layout
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.35, delay: i * 0.04 }}
+                className="group relative bg-background overflow-hidden cursor-pointer"
+                onClick={() => setSelected(project)}
+                data-hover="true"
+              >
+                {/* Image */}
+                <div className="relative overflow-hidden aspect-[4/3]">
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-background/10 group-hover:bg-background/50 transition-all duration-500" />
+
+                  {/* Hover icon */}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="w-12 h-12 bg-accent flex items-center justify-center">
+                      <ExternalLink size={18} className="text-accent-foreground" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Info */}
+                <div className="p-6 border-t border-border">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-['DM_Mono'] text-[10px] text-muted-foreground tracking-widest uppercase">
+                      {project.tag}
+                    </span>
+                    <span className="font-['DM_Mono'] text-[10px] text-muted-foreground">
+                      {project.year}
+                    </span>
+                  </div>
+                  <h3 className="font-['DM_Serif_Display'] text-xl text-foreground group-hover:text-accent transition-colors duration-300">
+                    {project.title}
+                  </h3>
+                  <p className="font-['Inter'] text-xs font-light text-muted-foreground mt-2 leading-relaxed line-clamp-2">
+                    {project.description}
+                  </p>
+
+                  <div className="flex flex-wrap gap-1.5 mt-4">
+                    {project.stack.slice(0, 3).map((s) => (
+                      <span key={s} className="font-['DM_Mono'] text-[10px] text-muted-foreground/60 border border-border/50 px-2 py-0.5">
+                        {s}
+                      </span>
+                    ))}
+                    {project.stack.length > 3 && (
+                      <span className="font-['DM_Mono'] text-[10px] text-muted-foreground/40 px-2 py-0.5">
+                        +{project.stack.length - 3}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </motion.article>
+            ))}
+          </AnimatePresence>
+        </motion.div>
+      </div>
+
+      {/* Modal */}
+      <AnimatePresence>
+        {selected && <ProjectModal project={selected} onClose={() => setSelected(null)} />}
+      </AnimatePresence>
+    </motion.div>
+  );
+}
+
+// ─── Home sections ────────────────────────────────────────────────────────────
+function Hero({ onProjectsClick }: { onProjectsClick: () => void }) {
   const [roleIdx, setRoleIdx] = useState(0);
 
   useEffect(() => {
@@ -261,187 +653,94 @@ function Hero() {
   }, []);
 
   return (
-    <section
-      id="hero"
-      className="relative min-h-screen flex flex-col justify-end px-8 md:px-16 pb-20 overflow-hidden"
-    >
-      {/* Grain overlay */}
-      <div
-        className="absolute inset-0 opacity-[0.04] pointer-events-none"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-          backgroundRepeat: "repeat",
-          backgroundSize: "200px",
-        }}
-      />
-
-      {/* Radial glow */}
+    <section id="hero" className="relative min-h-screen flex flex-col justify-end px-8 md:px-16 pb-20 overflow-hidden">
+      <div className="absolute inset-0 opacity-[0.04] pointer-events-none"
+        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`, backgroundRepeat: "repeat", backgroundSize: "200px" }} />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full opacity-10 pointer-events-none"
-        style={{ background: "radial-gradient(circle, #e8a020 0%, transparent 70%)" }}
-      />
-
-      {/* Year marker */}
-      <motion.div
-        className="absolute top-8 right-8 md:right-16 font-['DM_Mono'] text-xs text-muted-foreground tracking-widest"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1 }}
-      >
+        style={{ background: "radial-gradient(circle, #e8a020 0%, transparent 70%)" }} />
+      <motion.div className="absolute top-8 right-8 md:right-16 font-['DM_Mono'] text-xs text-muted-foreground tracking-widest"
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
       </motion.div>
-
-      {/* Vertical label */}
-      <motion.div
-        className="absolute right-8 md:right-16 top-1/2 -translate-y-1/2 font-['DM_Mono'] text-[10px] text-muted-foreground tracking-[0.3em] uppercase"
-        style={{ writingMode: "vertical-rl" }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2 }}
-      >
+      <motion.div className="absolute right-8 md:right-16 top-1/2 -translate-y-1/2 font-['DM_Mono'] text-[10px] text-muted-foreground tracking-[0.3em] uppercase"
+        style={{ writingMode: "vertical-rl" }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2 }}>
         Scroll to explore
       </motion.div>
 
       <div className="max-w-7xl">
-        <motion.div
-          className="font-['DM_Mono'] text-xs text-accent tracking-[0.4em] uppercase mb-8"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-        >
+        <motion.div className="font-['DM_Mono'] text-xs text-accent tracking-[0.4em] uppercase mb-8"
+          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
           Portfolio — Multidisciplinary Creative
         </motion.div>
-
-        <motion.h1
-          className="font-['DM_Serif_Display'] text-[clamp(3.5rem,10vw,9rem)] leading-[0.9] text-foreground mb-6"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.8 }}
-        >
-          JOHI<br />
-          <span className="text-accent">ORTIZ</span>
+        <motion.h1 className="font-['DM_Serif_Display'] text-[clamp(3.5rem,10vw,9rem)] leading-[0.9] text-foreground mb-6"
+          initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.8 }}>
+          Johi<br /><span className="text-accent">Ortiz</span>
         </motion.h1>
 
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
-          <motion.div
-            className="flex items-center gap-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8 }}
-          >
+          <motion.div className="flex items-center gap-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}>
             <div className="w-10 h-px bg-accent" />
             <AnimatePresence mode="wait">
-              <motion.span
-                key={roleIdx}
+              <motion.span key={roleIdx}
                 className="font-['Inter'] text-lg md:text-xl font-light text-muted-foreground"
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.35 }}
-              >
+                initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.35 }}>
                 {ROLES[roleIdx]}
               </motion.span>
             </AnimatePresence>
           </motion.div>
 
-          <motion.p
-            className="max-w-sm font-['Inter'] text-sm font-light text-muted-foreground leading-relaxed"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1 }}
+          <motion.button
+            onClick={onProjectsClick}
+            className="flex items-center gap-3 group"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}
+            data-hover="true"
           >
-            Crafting digital experiences at the intersection of code and art.
-            Based in Madrid — available worldwide.
-          </motion.p>
+            <span className="font-['DM_Mono'] text-xs text-muted-foreground tracking-widest uppercase group-hover:text-accent transition-colors">
+              View all work
+            </span>
+            <ArrowUpRight size={14} className="text-muted-foreground group-hover:text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+          </motion.button>
         </div>
 
-        {/* Scroll indicator */}
-        <motion.div
-          className="absolute bottom-8 left-8 md:left-16 flex items-center gap-3"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.4 }}
-        >
-          <motion.div
-            className="w-px h-12 bg-muted-foreground/30 origin-top"
-            animate={{ scaleY: [1, 0.3, 1] }}
-            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-          />
-          <span className="font-['DM_Mono'] text-[10px] text-muted-foreground tracking-widest uppercase">
-            Scroll
-          </span>
+        <motion.div className="absolute bottom-8 left-8 md:left-16 flex items-center gap-3"
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.4 }}>
+          <motion.div className="w-px h-12 bg-muted-foreground/30 origin-top"
+            animate={{ scaleY: [1, 0.3, 1] }} transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }} />
+          <span className="font-['DM_Mono'] text-[10px] text-muted-foreground tracking-widest uppercase">Scroll</span>
         </motion.div>
       </div>
     </section>
   );
 }
 
-// ─── About ────────────────────────────────────────────────────────────────────
 function About() {
-  const ref = useRef<HTMLDivElement>(null);
-
   return (
     <section id="about" className="px-8 md:px-16 py-32 md:py-48 border-t border-border">
       <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 md:gap-24 items-center">
-        <motion.div
-          ref={ref}
-          className="relative"
-          initial={{ opacity: 0, x: -30 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8 }}
-        >
+        <motion.div className="relative" initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8 }}>
           <div className="relative overflow-hidden aspect-[4/5] bg-card">
-            <img
-              src={perfilPhoto}
-              alt="Portrait"
-              className="w-full h-full object-cover object-top hover:scale-105 transition-all duration-700"
-            />
+            <img src={perfilPhoto} alt="Portrait" className="w-full h-full object-cover object-top hover:scale-105 transition-all duration-700" />
             <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
           </div>
           <div className="absolute -bottom-4 -right-4 w-24 h-24 border border-accent/30 pointer-events-none" />
           <div className="absolute -top-4 -left-4 w-16 h-16 border border-border pointer-events-none" />
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, x: 30 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8, delay: 0.15 }}
-        >
-          <div className="font-['DM_Mono'] text-xs text-accent tracking-[0.4em] uppercase mb-6">
-            About
-          </div>
+        <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8, delay: 0.15 }}>
+          <div className="font-['DM_Mono'] text-xs text-accent tracking-[0.4em] uppercase mb-6">About</div>
           <h2 className="font-['DM_Serif_Display'] text-4xl md:text-5xl text-foreground leading-tight mb-8">
-            I build things that<br />
-            <em>look good</em> and<br />
-            work even better.
+            I build things that<br /><em>look good</em> and<br />work even better.
           </h2>
           <div className="space-y-4 font-['Inter'] text-sm font-light text-muted-foreground leading-relaxed">
-            <p>
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Delectus minus eius voluptatem rem quaerat 
-              asperiores praesentium deleniti unde laudantium! Iure consequatur magni, mollitia repellendus aperiam 
-              necessitatibus velit eos voluptatum earum!
-            </p>
-            <p>
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ullam nihil distinctio aperiam officia laborum
-              nostrum laboriosam recusandae saepe necessitatibus voluptates! Consectetur commodi hic nesciunt error ut
-              odio quos quaerat odit!
-            </p>
-            <p>
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Culpa, sed?
-            </p>
+            <p>I am a multidisciplinary creative with over 8 years of experience across software development, visual design, illustration, and photography.</p>
+            <p>My work lives at the intersection of technical precision and artistic intuition — whether I am architecting a scalable API, designing a brand system, drawing editorial illustrations, or capturing documentary photos.</p>
+            <p>I believe the best digital experiences are built by people who understand both the code and the canvas.</p>
           </div>
-
           <div className="mt-10 grid grid-cols-3 gap-6 pt-10 border-t border-border">
-            {[
-              { num: "8+", label: "Years" },
-              { num: "60+", label: "Projects" },
-              { num: "4", label: "Disciplines" },
-            ].map((s) => (
+            {[{ num: "3+", label: "Years" }, { num: "20+", label: "Projects" }, { num: "4", label: "Disciplines" }].map((s) => (
               <div key={s.label}>
                 <div className="font-['DM_Serif_Display'] text-3xl text-accent">{s.num}</div>
-                <div className="font-['DM_Mono'] text-xs text-muted-foreground tracking-widest uppercase mt-1">
-                  {s.label}
-                </div>
+                <div className="font-['DM_Mono'] text-xs text-muted-foreground tracking-widest uppercase mt-1">{s.label}</div>
               </div>
             ))}
           </div>
@@ -451,169 +750,25 @@ function About() {
   );
 }
 
-// ─── Work ─────────────────────────────────────────────────────────────────────
-function Work() {
-  const [active, setActive] = useState<Category>("all");
-  const [hovered, setHovered] = useState<number | null>(null);
-
-  const cats: { key: Category; label: string }[] = [
-    { key: "all", label: "All" },
-    { key: "dev", label: "Dev" },
-    { key: "design", label: "Design" },
-    { key: "illustration", label: "Illustration" },
-    { key: "photo", label: "Photo" },
-  ];
-
-  const filtered = active === "all" ? PROJECTS : PROJECTS.filter((p) => p.category === active);
-
-  return (
-    <section id="work" className="px-8 md:px-16 py-32 md:py-48 border-t border-border">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <div className="font-['DM_Mono'] text-xs text-accent tracking-[0.4em] uppercase mb-4">
-              Selected Work
-            </div>
-            <h2 className="font-['DM_Serif_Display'] text-4xl md:text-6xl text-foreground">
-              Projects
-            </h2>
-          </motion.div>
-
-          <motion.div
-            className="flex flex-wrap gap-2"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-          >
-            {cats.map((c) => (
-              <button
-                key={c.key}
-                onClick={() => setActive(c.key)}
-                className={`font-['DM_Mono'] text-xs tracking-widest uppercase px-4 py-2 border transition-all duration-300 ${
-                  active === c.key
-                    ? "border-accent bg-accent text-accent-foreground"
-                    : "border-border text-muted-foreground hover:border-accent/50 hover:text-foreground"
-                }`}
-                data-hover="true"
-              >
-                {c.label}
-              </button>
-            ))}
-          </motion.div>
-        </div>
-
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border"
-          layout
-        >
-          <AnimatePresence>
-            {filtered.map((project, i) => (
-              <motion.div
-                key={project.id}
-                layout
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.4, delay: i * 0.05 }}
-                className="group relative bg-background overflow-hidden aspect-[4/3] cursor-pointer"
-                onMouseEnter={() => setHovered(project.id)}
-                onMouseLeave={() => setHovered(null)}
-                data-hover="true"
-              >
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-background/20 group-hover:bg-background/60 transition-all duration-500" />
-
-                {/* Default label */}
-                <div className="absolute bottom-0 left-0 right-0 p-5 translate-y-0 group-hover:translate-y-full transition-transform duration-500">
-                  <div className="font-['DM_Mono'] text-[10px] text-muted-foreground tracking-widest uppercase mb-1">
-                    {project.tag} — {project.year}
-                  </div>
-                  <div className="font-['DM_Serif_Display'] text-xl text-foreground">
-                    {project.title}
-                  </div>
-                </div>
-
-                {/* Hover reveal */}
-                <motion.div
-                  className="absolute inset-0 flex flex-col justify-between p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-400"
-                >
-                  <div className="flex justify-between items-start">
-                    <span className="font-['DM_Mono'] text-[10px] text-accent tracking-widest uppercase border border-accent/30 px-2 py-1">
-                      {project.tag}
-                    </span>
-                    <ExternalLink size={14} className="text-muted-foreground" />
-                  </div>
-                  <div>
-                    <div className="font-['DM_Serif_Display'] text-2xl text-foreground mb-2">
-                      {project.title}
-                    </div>
-                    <p className="font-['Inter'] text-xs font-light text-muted-foreground leading-relaxed">
-                      {project.description}
-                    </p>
-                  </div>
-                </motion.div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
-      </div>
-    </section>
-  );
-}
-
-// ─── Skills ───────────────────────────────────────────────────────────────────
 function Skills() {
   return (
     <section id="skills" className="px-8 md:px-16 py-32 md:py-48 border-t border-border">
       <div className="max-w-7xl mx-auto">
-        <motion.div
-          className="mb-16"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
-          <div className="font-['DM_Mono'] text-xs text-accent tracking-[0.4em] uppercase mb-4">
-            Expertise
-          </div>
-          <h2 className="font-['DM_Serif_Display'] text-4xl md:text-6xl text-foreground">
-            What I do
-          </h2>
+        <motion.div className="mb-16" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+          <div className="font-['DM_Mono'] text-xs text-accent tracking-[0.4em] uppercase mb-4">Expertise</div>
+          <h2 className="font-['DM_Serif_Display'] text-4xl md:text-6xl text-foreground">What I do</h2>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-border">
           {SKILLS.map((skill, i) => (
-            <motion.div
-              key={skill.discipline}
-              className="bg-background p-8 group hover:bg-card transition-colors duration-300"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-            >
-              <div className="font-['DM_Serif_Display'] text-4xl text-accent/40 group-hover:text-accent transition-colors duration-300 mb-6">
-                {skill.icon}
-              </div>
-              <div className="font-['DM_Serif_Display'] text-xl text-foreground mb-6">
-                {skill.discipline}
-              </div>
+            <motion.div key={skill.discipline} className="bg-background p-8 group hover:bg-card transition-colors duration-300"
+              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
+              <div className="font-['DM_Serif_Display'] text-4xl text-accent/40 group-hover:text-accent transition-colors duration-300 mb-6">{skill.icon}</div>
+              <div className="font-['DM_Serif_Display'] text-xl text-foreground mb-6">{skill.discipline}</div>
               <ul className="space-y-2">
                 {skill.items.map((item) => (
-                  <li
-                    key={item}
-                    className="font-['Inter'] text-xs font-light text-muted-foreground flex items-center gap-2"
-                  >
-                    <span className="w-1 h-1 rounded-full bg-accent/50 flex-shrink-0" />
-                    {item}
+                  <li key={item} className="font-['Inter'] text-xs font-light text-muted-foreground flex items-center gap-2">
+                    <span className="w-1 h-1 rounded-full bg-accent/50 flex-shrink-0" />{item}
                   </li>
                 ))}
               </ul>
@@ -621,19 +776,12 @@ function Skills() {
           ))}
         </div>
 
-        {/* Marquee */}
         <div className="mt-20 overflow-hidden border-y border-border py-5">
-          <motion.div
-            className="flex gap-12 whitespace-nowrap"
-            animate={{ x: ["0%", "-50%"] }}
-            transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-          >
+          <motion.div className="flex gap-12 whitespace-nowrap"
+            animate={{ x: ["0%", "-50%"] }} transition={{ duration: 30, repeat: Infinity, ease: "linear" }}>
             {[...Array(2)].map((_, ri) =>
               ["React", "TypeScript", "Node.js", "Figma", "Illustrator", "Lightroom", "Procreate", "PostgreSQL", "Docker", "Next.js", "GraphQL", "Photoshop"].map((t) => (
-                <span
-                  key={`${t}-${ri}`}
-                  className="font-['DM_Mono'] text-sm text-muted-foreground/50 tracking-widest uppercase"
-                >
+                <span key={`${t}-${ri}`} className="font-['DM_Mono'] text-sm text-muted-foreground/50 tracking-widest uppercase">
                   {t} <span className="text-accent/40">✦</span>
                 </span>
               ))
@@ -645,70 +793,32 @@ function Skills() {
   );
 }
 
-// ─── Contact ──────────────────────────────────────────────────────────────────
 function Contact() {
   return (
     <section id="contact" className="px-8 md:px-16 py-32 md:py-48 border-t border-border">
       <div className="max-w-7xl mx-auto">
-        <motion.div
-          className="max-w-3xl"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-        >
-          <div className="font-['DM_Mono'] text-xs text-accent tracking-[0.4em] uppercase mb-6">
-            Get in touch
-          </div>
+        <motion.div className="max-w-3xl" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
+          <div className="font-['DM_Mono'] text-xs text-accent tracking-[0.4em] uppercase mb-6">Get in touch</div>
           <h2 className="font-['DM_Serif_Display'] text-5xl md:text-7xl text-foreground leading-tight mb-10">
-            Let"s create<br />
-            something<br />
-            <em className="text-accent">extraordinary.</em>
+            Let&apos;s create<br />something<br /><em className="text-accent">extraordinary.</em>
           </h2>
           <p className="font-['Inter'] text-sm font-light text-muted-foreground leading-relaxed mb-12 max-w-lg">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores dicta ut nam qui exercitationem assumenda molestiae voluptates laudantium, vero unde?
+            I am currently open to freelance projects, collaborations, and full-time opportunities. If you have an idea — big or small — I would love to hear about it.
           </p>
-
-          <a
-            href="mailto:hello@yourdomain.com"
-            className="inline-flex items-center gap-4 group"
-            data-hover="true"
-          >
+          <a href="ortizvallejosjohi@gmail.com" className="inline-flex items-center gap-4 group" data-hover="true">
             <span className="font-['DM_Serif_Display'] text-2xl md:text-3xl text-foreground group-hover:text-accent transition-colors duration-300">
-              hello@yourdomain.com
+              ortizvallejosjohi@gmail.com
             </span>
-            <ArrowUpRight
-              size={24}
-              className="text-muted-foreground group-hover:text-accent group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300"
-            />
+            <ArrowUpRight size={24} className="text-muted-foreground group-hover:text-accent group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300" />
           </a>
         </motion.div>
 
-        <motion.div
-          className="mt-24 pt-10 border-t border-border flex flex-col md:flex-row justify-between items-start md:items-center gap-6"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-        >
-          <div className="font-['DM_Mono'] text-xs text-muted-foreground">
-            © 2026 — Johi Ortiz. All rights reserved.
-          </div>
-
+        <motion.div className="mt-24 pt-10 border-t border-border flex flex-col md:flex-row justify-between items-start md:items-center gap-6"
+          initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.3 }}>
+          <div className="font-['DM_Mono'] text-xs text-muted-foreground">© 2026 — Johi Ortiz. All rights reserved.</div>
           <div className="flex items-center gap-6">
-            {[
-              { icon: Github, label: "GitHub", href: "#" },
-              { icon: Instagram, label: "Instagram", href: "#" },
-              { icon: Linkedin, label: "LinkedIn", href: "#" },
-              { icon: Mail, label: "Email", href: "mailto:hello@yourdomain.com" },
-            ].map(({ icon: Icon, label, href }) => (
-              <a
-                key={label}
-                href={href}
-                aria-label={label}
-                className="text-muted-foreground hover:text-accent transition-colors duration-300"
-                data-hover="true"
-              >
+            {[{ icon: Github, label: "GitHub", href: "#" }, { icon: Instagram, label: "Instagram", href: "#" }, { icon: Linkedin, label: "LinkedIn", href: "#" }, { icon: Mail, label: "Email", href: "ortizvallejosjohi@gmail.com" }].map(({ icon: Icon, label, href }) => (
+              <a key={label} href={href} aria-label={label} className="text-muted-foreground hover:text-accent transition-colors duration-300" data-hover="true">
                 <Icon size={16} />
               </a>
             ))}
@@ -721,17 +831,32 @@ function Contact() {
 
 // ─── App ──────────────────────────────────────────────────────────────────────
 export default function App() {
+  const [page, setPage] = useState<Page>("home");
+
+  const navigateTo = (p: Page) => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setPage(p);
+  };
+
   return (
     <div className="bg-background text-foreground min-h-screen" style={{ fontFamily: "Inter, sans-serif" }}>
       <Cursor />
-      <Nav />
-      <main>
-        <Hero />
-        <About />
-        <Work />
-        <Skills />
-        <Contact />
-      </main>
+      <Nav page={page} onNavigate={navigateTo} />
+
+      <AnimatePresence mode="wait">
+        {page === "home" ? (
+          <motion.main key="home" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
+            <Hero onProjectsClick={() => navigateTo("projects")} />
+            <About />
+            <Skills />
+            <Contact />
+          </motion.main>
+        ) : (
+          <motion.div key="projects" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
+            <ProjectsPage onBack={() => navigateTo("home")} />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
