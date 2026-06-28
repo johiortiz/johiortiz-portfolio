@@ -1,181 +1,20 @@
 import { useState, useEffect } from "react";
-import perfilPhoto from "@/imports/perfilphoto.png";
+import perfilPhoto from "@/imports/perfilphoto.jpeg";
 import { motion, AnimatePresence } from "motion/react";
 import Skills from "./components/Skills";
 import {
   ArrowUpRight, Menu, X, Github, Instagram, Linkedin, Mail,
   ArrowLeft, ExternalLink, ChevronLeft, ChevronRight, Globe, Code2
 } from "lucide-react";
+import { PROJECTS } from "./data";
+import type { Category, Project } from "./types";
 
-type Category = "all" | "dev" | "design" | "illustration" | "photo";
 type Page = "home" | "projects";
 
-interface Project {
-  id: number;
-  title: string;
-  category: Exclude<Category, "all">;
-  tag: string;
-  image: string;
-  images: string[];
-  year: string;
-  description: string;
-  longDescription: string;
-  stack: string[];
-  liveUrl?: string;
-  repoUrl?: string;
-  role: string;
-}
 
 const ROLES = ["Fullstack Developer", "Graphic Designer", "Illustrator", "Photographer"];
 
-const PROJECTS: Project[] = [
-  {
-    id: 1,
-    title: "Archi Studio",
-    category: "dev",
-    tag: "Web App",
-    image: "https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=1200&h=800&fit=crop&auto=format",
-    images: [
-      "https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=1200&h=800&fit=crop&auto=format",
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=800&fit=crop&auto=format",
-      "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=1200&h=800&fit=crop&auto=format",
-    ],
-    year: "2024",
-    description: "Architecture firm platform with 3D visualization tools",
-    longDescription: "A full-stack web platform for an architecture studio that combines portfolio management with real-time 3D visualization. Clients can explore floor plans, request revisions, and sign off on designs — all within a single interface. Built with React, Three.js, and a Node.js backend with WebSocket-driven collaboration.",
-    stack: ["React", "Three.js", "Node.js", "PostgreSQL", "WebSockets", "Tailwind"],
-    role: "Fullstack Developer",
-    liveUrl: "#",
-    repoUrl: "#",
-  },
-  {
-    id: 2,
-    title: "Bloom Brand",
-    category: "design",
-    tag: "Brand Identity",
-    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&h=800&fit=crop&auto=format",
-    images: [
-      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&h=800&fit=crop&auto=format",
-      "https://images.unsplash.com/photo-1586495777744-4e6ffeef8041?w=1200&h=800&fit=crop&auto=format",
-      "https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=1200&h=800&fit=crop&auto=format",
-    ],
-    year: "2024",
-    description: "Full brand system for a sustainable cosmetics line",
-    longDescription: "Complete visual identity for a new generation sustainable cosmetics brand. From logotype and color system to packaging design, art direction for campaigns, and a full brand guidelines document. The system reflects the brand's commitment to clean ingredients through a warm, botanical visual language.",
-    stack: ["Figma", "Illustrator", "Photoshop", "After Effects"],
-    role: "Brand Designer",
-    liveUrl: "#",
-  },
-  {
-    id: 3,
-    title: "Nocturnal Series",
-    category: "illustration",
-    tag: "Editorial",
-    image: "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=1200&h=800&fit=crop&auto=format",
-    images: [
-      "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=1200&h=800&fit=crop&auto=format",
-      "https://images.unsplash.com/photo-1518640467707-6811f4a6ab73?w=1200&h=800&fit=crop&auto=format",
-      "https://images.unsplash.com/photo-1569982175971-d92b01cf8694?w=1200&h=800&fit=crop&auto=format",
-    ],
-    year: "2023",
-    description: "12-piece illustration series for a literary magazine",
-    longDescription: "A series of twelve editorial illustrations commissioned by a literary magazine exploring themes of memory and solitude. Each piece pairs a short story with a full-page illustration using a limited palette of deep indigo, ochre, and raw white. The series was later exhibited at a cultural space in Madrid.",
-    stack: ["Procreate", "Photoshop", "Illustrator"],
-    role: "Illustrator",
-    liveUrl: "#",
-  },
-  {
-    id: 4,
-    title: "Urban Fragments",
-    category: "photo",
-    tag: "Photography",
-    image: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1200&h=800&fit=crop&auto=format",
-    images: [
-      "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1200&h=800&fit=crop&auto=format",
-      "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=1200&h=800&fit=crop&auto=format",
-      "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=1200&h=800&fit=crop&auto=format",
-    ],
-    year: "2024",
-    description: "Street photography documenting metropolitan loneliness",
-    longDescription: "A documentary photography project that captures the quiet spaces between moments in a large city. Shot over eighteen months across Madrid, Barcelona, and Lisbon, the series uses available light and tight compositions to frame the emotional distance that can exist in the most populated places on earth.",
-    stack: ["Sony A7IV", "Lightroom", "Capture One"],
-    role: "Photographer",
-    liveUrl: "#",
-  },
-  {
-    id: 5,
-    title: "Orbis Dashboard",
-    category: "dev",
-    tag: "SaaS",
-    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&h=800&fit=crop&auto=format",
-    images: [
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&h=800&fit=crop&auto=format",
-      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&h=800&fit=crop&auto=format",
-      "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=1200&h=800&fit=crop&auto=format",
-    ],
-    year: "2023",
-    description: "Analytics platform for creative agencies",
-    longDescription: "A SaaS analytics platform built specifically for creative agencies to track project profitability, team capacity, and client retention. Features real-time dashboards, automated reporting, and integrations with tools like Notion, Harvest, and Slack. Grew to 200+ agency users within 6 months of launch.",
-    stack: ["Next.js", "TypeScript", "Prisma", "PostgreSQL", "Recharts", "Stripe"],
-    role: "Fullstack Developer",
-    liveUrl: "#",
-    repoUrl: "#",
-  },
-  {
-    id: 6,
-    title: "Solstice Poster",
-    category: "design",
-    tag: "Print",
-    image: "https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?w=1200&h=800&fit=crop&auto=format",
-    images: [
-      "https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?w=1200&h=800&fit=crop&auto=format",
-      "https://images.unsplash.com/photo-1615022630427-a1d81d0d52d2?w=1200&h=800&fit=crop&auto=format",
-      "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=1200&h=800&fit=crop&auto=format",
-    ],
-    year: "2023",
-    description: "Limited edition poster series for a music festival",
-    longDescription: "A three-poster limited edition series for Solstice, an electronic music festival in Valencia. Each poster corresponds to one night of the festival and uses a typographic system that transforms into a visual score. Printed offset in three Pantone colors on uncoated stock, edition of 500.",
-    stack: ["Illustrator", "Figma", "Photoshop"],
-    role: "Graphic Designer",
-    liveUrl: "#",
-  },
-  {
-    id: 7,
-    title: "Quiet Hours",
-    category: "photo",
-    tag: "Documentary",
-    image: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=1200&h=800&fit=crop&auto=format",
-    images: [
-      "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=1200&h=800&fit=crop&auto=format",
-      "https://images.unsplash.com/photo-1550399105-c4db5fb85c18?w=1200&h=800&fit=crop&auto=format",
-      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&h=800&fit=crop&auto=format",
-    ],
-    year: "2024",
-    description: "Documentary series on vanishing crafts",
-    longDescription: "An ongoing documentary project portraying the last practitioners of traditional crafts across rural Spain. The photographs are accompanied by recorded oral histories and will be published as a photobook in 2025. Currently at 34 portraits across 11 trades in 8 provinces.",
-    stack: ["Fujifilm GFX100", "Lightroom", "Capture One"],
-    role: "Photographer & Art Director",
-    liveUrl: "#",
-  },
-  {
-    id: 8,
-    title: "Mycelium",
-    category: "illustration",
-    tag: "Digital Art",
-    image: "https://images.unsplash.com/photo-1518640467707-6811f4a6ab73?w=1200&h=800&fit=crop&auto=format",
-    images: [
-      "https://images.unsplash.com/photo-1518640467707-6811f4a6ab73?w=1200&h=800&fit=crop&auto=format",
-      "https://images.unsplash.com/photo-1614854262318-831574f15f1f?w=1200&h=800&fit=crop&auto=format",
-      "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=1200&h=800&fit=crop&auto=format",
-    ],
-    year: "2024",
-    description: "Generative organic illustration system",
-    longDescription: "A system of generative digital illustrations exploring the visual language of fungi and root networks. Each piece is produced by combining hand-drawn elements with algorithmic processes written in p5.js. The series includes 40 unique pieces and was released as a limited NFT collection.",
-    stack: ["Procreate", "p5.js", "Photoshop"],
-    role: "Illustrator & Creative Coder",
-    liveUrl: "#",
-  },
-];
+
 
 // ─── Pixel decorations ────────────────────────────────────────────────────────
 function PixelCorner({ className }: { className?: string }) {
@@ -588,7 +427,7 @@ function ProjectsPage({ onBack }: { onBack: () => void }) {
               </h1>
             </div>
             <p className="max-w-xs font-['DM_Mono'] text-xs text-muted-foreground leading-relaxed" style={{ lineHeight: "2" }}>
-              A curated selection across dev, design, illustration, and photography.
+              A curated selection across dev, design, and illustration.
             </p>
           </div>
         </div>
@@ -739,7 +578,7 @@ function Hero({ onProjectsClick }: { onProjectsClick: () => void }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
-          &gt; Portfolio_v2.0 — Multidisciplinary
+          &gt; Portfolio
         </motion.div>
 
         <motion.h1
@@ -859,7 +698,7 @@ function About() {
             <br />& look great.
           </h2>
           <div className="space-y-4 font-['DM_Mono'] text-xs text-muted-foreground" style={{ lineHeight: "2.2" }}>
-            <p>Multidisciplinary creative with experience across software development, visual design, illustration, and photography.</p>
+            <p>Multidisciplinary creative with experience across software development, visual design, and illustration.</p>
             <p>My work lives at the intersection of technical precision and artistic intuition.</p>
             <p>I believe the best digital experiences are built by people who understand both the code and the canvas.</p>
           </div>
