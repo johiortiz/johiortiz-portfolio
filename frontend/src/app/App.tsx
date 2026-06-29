@@ -391,7 +391,6 @@ function ProjectsPage({ onBack }: { onBack: () => void }) {
     { key: "dev", label: "Dev", count: PROJECTS.filter((p) => p.category === "dev").length },
     { key: "design", label: "Design", count: PROJECTS.filter((p) => p.category === "design").length },
     { key: "illustration", label: "Illus.", count: PROJECTS.filter((p) => p.category === "illustration").length },
-    { key: "photo", label: "Photo", count: PROJECTS.filter((p) => p.category === "photo").length },
   ];
 
   const filtered = active === "all" ? PROJECTS : PROJECTS.filter((p) => p.category === active);
@@ -703,7 +702,7 @@ function About() {
             <p>I believe the best digital experiences are built by people who understand both the code and the canvas.</p>
           </div>
           <div className="mt-10 grid grid-cols-3 gap-6 pt-10" style={{ borderTop: "1px solid rgba(0,245,255,0.15)" }}>
-            {[{ num: "3+", label: "Years" }, { num: "20+", label: "Projects" }, { num: "4", label: "Disciplines" }].map((s) => (
+            {[{ num: "3+", label: "Years" }, { num: "10", label: "Projects" }, { num: "3", label: "Disciplines" }].map((s) => (
               <div key={s.label}>
                 <div className="font-['Press_Start_2P'] text-2xl text-accent" style={{ textShadow: "0 0 12px rgba(0,245,255,0.5)" }}>
                   {s.num}
@@ -774,9 +773,9 @@ function Contact() {
           </div>
           <div className="flex items-center gap-6">
             {[
-              { icon: Github, label: "GitHub", href: "#" },
-              { icon: Instagram, label: "Instagram", href: "#" },
-              { icon: Linkedin, label: "LinkedIn", href: "#" },
+              { icon: Github, label: "GitHub", href: "https://github.com/johiortiz" },
+              //{ icon: Instagram, label: "Instagram", href: "#" },
+              { icon: Linkedin, label: "LinkedIn", href: "https://www.linkedin.com/in/johi-ortiz-vallejos/" },
               { icon: Mail, label: "Email", href: "mailto:ortizvallejosjohi@gmail.com" },
             ].map(({ icon: Icon, label, href }) => (
               <a key={label} href={href} aria-label={label} className="text-muted-foreground hover:text-accent transition-colors duration-300" data-hover="true">

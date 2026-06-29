@@ -8,12 +8,13 @@ const SKILL_GROUPS = [
     description:
       "Construyo interfaces y lógica de producto con foco en rendimiento, escalabilidad y experiencia limpia.",
     items: [
-      { name: "React / Next.js", level: 92 },
-      { name: "TypeScript", level: 88 },
-      { name: "Node.js / Express", level: 84 },
-      { name: "PostgreSQL", level: 78 },
-      { name: "Docker", level: 72 },
-      { name: "REST & GraphQL", level: 80 },
+      { name: "React / Next.js", level: 30 },
+      { name: "TypeScript", level: 30 },
+      { name: "Node.js / Express", level: 20 },
+      { name: "PostgreSQL", level: 10 },
+      { name: "Docker", level: 10 },
+      { name: "C", level: 60 },
+      { name: "Python", level: 60 },
     ],
   },
   {
@@ -22,11 +23,9 @@ const SKILL_GROUPS = [
     description:
       "Diseño sistemas visuales con intención: identidad, interfaz, composición, ritmo y dirección estética.",
     items: [
-      { name: "Brand Identity", level: 90 },
-      { name: "UI/UX", level: 86 },
-      { name: "Motion Design", level: 73 },
-      { name: "Typography", level: 88 },
-      { name: "Print", level: 76 },
+      { name: "Brand Identity", level: 60 },
+      { name: "UI/UX", level: 40 },
+      { name: "Typography", level: 30 },
       { name: "Figma / Illustrator", level: 91 },
     ],
   },
@@ -36,12 +35,12 @@ const SKILL_GROUPS = [
     description:
       "Trabajo la ilustración como lenguaje narrativo, mezclando sensibilidad editorial con acabado digital.",
     items: [
-      { name: "Digital Illustration", level: 87 },
-      { name: "Editorial Art", level: 81 },
+      { name: "Digital Illustration", level: 100 },
+      { name: "Editorial Art", level: 80 },
       { name: "Character Design", level: 70 },
-      { name: "Concept Art", level: 68 },
-      { name: "Procreate", level: 90 },
-      { name: "Vector Art", level: 79 },
+      { name: "Concept Art", level: 70 },
+      { name: "Procreate", level: 20 },
+      { name: "Vector Art", level: 40 },
     ],
   },
 ];
