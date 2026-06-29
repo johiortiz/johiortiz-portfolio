@@ -692,14 +692,14 @@ function About() {
             className="font-['Press_Start_2P'] text-2xl md:text-3xl text-foreground leading-tight mb-8"
             style={{ lineHeight: "1.6", textShadow: "0 0 20px rgba(0,245,255,0.2)" }}
           >
-            I build things
+            I create work
             <br />
-            <span className="text-accent">that work</span>
-            <br />& look great.
+            <span className="text-accent">where code, design,</span>
+            <br /> & intention come together.
           </h2>
           <div className="space-y-4 font-['DM_Mono'] text-xs text-muted-foreground" style={{ lineHeight: "2.2" }}>
-            <p>Multidisciplinary creative with experience across software development, visual design, and illustration.</p>
-            <p>My work lives at the intersection of technical precision and artistic intuition.</p>
+            <p>I design and build digital experiences with attention to performance, detail, and visual intent.</p>
+            <p>My background spans code, systems and visual design — I enjoy making solutions that are robust under the hood and honest on the surface.</p>
             <p>I believe the best digital experiences are built by people who understand both the code and the canvas.</p>
           </div>
           <div className="mt-10 grid grid-cols-3 gap-6 pt-10" style={{ borderTop: "1px solid rgba(0,245,255,0.15)" }}>
